@@ -14,7 +14,8 @@ interface GlobalContextType {
     isLoggedIn: boolean;
     user: User | null;
     loading:  boolean;
-    refetch: (newParams?: Record<string, string | number>) => Promise<void>
+    refetch: (newParams?: Record<string, string | number>) => Promise<void>;
+    error: string | null;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -25,7 +26,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
         fn: getCurrentUser,
     })
 
-    const isLoggedIn = !!user; 
+    const isLoggedIn = !!user;
     // !null = true, !true = false
     // !{ name: "Leonard"} = false, !false = true }
 
@@ -34,7 +35,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     return (
         <GlobalContext.Provider value={{
             isLoggedIn,
-            user,
+            user: user as User | null,
             loading,
             refetch,
             error
@@ -51,7 +52,7 @@ export const useGlobalContext = (): GlobalContextType  => {
         throw new Error("useGlobalContext must be used within a GlobaProvider");
     }
 
-    return context
+    return context as GlobalContextType
 }
 
 export default GlobalProvider

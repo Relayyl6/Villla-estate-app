@@ -2,10 +2,11 @@ import { View, Text, ScrollView, Image, TouchableOpacity, ImageSourcePropType, A
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import icons from '@/constants/icons'
-import images from '@/constants/images'
+// import images from '@/constants/images'
 import { settings } from '@/constants/data'
 import { useGlobalContext } from '@/lib/global-provider'
 import { logout } from '@/lib/Appwrite'
+import images from '@/constants/images'
 
 interface SettingsItemsProps {
   icon: ImageSourcePropType;
@@ -31,10 +32,10 @@ const SettingItem = ({ icon, title, onPress, TextStyle, showArrow=true }: Settin
       </View>
       {
         showArrow && <Image
-                      source={icons.rightArrow}
-                      alt="right Arrow"
-                      className='size-5'
-                    />
+                        source={icons.rightArrow}
+                        alt="right Arro w"
+                        className='size-5'
+                      />
       }
     </TouchableOpacity>
   )
@@ -49,7 +50,7 @@ const Profile = () => {
       Alert.alert('Success', 'You have been logged out successfully');
       refetch()
     } else {
-      Alert.alert('Error', 'An Error occured while logging out');
+      Alert.alert('Error', 'An error occured while logging out');
     }
   }
   return (
@@ -59,19 +60,20 @@ const Profile = () => {
         contentContainerClassName='pb-32 px-7'
       >
         <View className="flex flex-row items-center justify-between mt-5">
-          <Text className='text-2xl font-rubik-bold'>
+          <Text className='text-2xl font-rubik-bold dark:text-white'>
             Profile
           </Text>
           <Image
               source={icons.bell}
-              className='size-7'
+              className='size-7 dark:invert'
             />
         </View>
 
         <View className='flex flex-row justify-center mt-5'>
           <View className='flex flex-col items-center relative mt-5'>
             <Image
-              source={{ uri: user?.avatar }}
+            // { uri: user?.avatar } ||
+              source={ images.avatar}
               className='size-44 relative rounded-full'
               alt="Avatar"
             />
