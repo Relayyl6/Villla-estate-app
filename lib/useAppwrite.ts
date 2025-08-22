@@ -30,6 +30,8 @@ export const useAppwrite = <T, P extends Record<string, string | number>>({
 
             try {
                 const result = await fn(fetchParams);
+                // console.log(result)
+                // console.log("useAppwrite result", JSON.stringify(result, null, 2))
                 setData(result);
             } catch (err: unknown) {
                 const errorMessage =

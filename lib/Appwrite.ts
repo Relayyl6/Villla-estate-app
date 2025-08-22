@@ -67,18 +67,39 @@ export async function logout() {
 export async function getCurrentUser() {
     try {
         const user = await account.get();
-
+        console.log("Fetched User:", JSON.stringify(user, null, 2))
+        console.log("User name", user.name);
         if (user.$id) {
-            const userAvatar = await avatar.getInitials(user.name);
-            return {
+            const userAvatar = await avatar.getInitials(user.name || 'guest'); // this returns an object ArrayBuffer]
+            // Convert Arraybuffer to base64 data URI
+            console.log("userAvatar", userAvatar)
+            console.log("userAvatarType", Object.prototype.toString.call(userAvatar));
+            const avatarString = userAvatar.toString();
+            console.log(avatarString)
+            // const avatarData = arrayBufferToBase64(userAvatar)
+            // console.log("User Avatar URL:", avatarData);
+            const result = {
                 ...user,
-                user: userAvatar.toString(),
+                avatar: userAvatar.toString(),
             }
+            console.log("getCurrentUser result", JSON.stringify(result, null, 2));
+            return result
+        
+            // console.log(user)
+            // return user
         }
     } catch (error) {
-        console.error(error);
+        console.error("getCurrentUser Error",error);
         return null;
     }
 }
 
 
+export const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return `data:image/png;base64,${btoa(binary)}`;
+}

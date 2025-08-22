@@ -7,7 +7,7 @@ interface User {
     $id: string;
     name : string;
     email: string;
-    avatar: string
+    avatar: unknown
 }
 
 interface GlobalContextType {
@@ -52,7 +52,7 @@ export const useGlobalContext = (): GlobalContextType  => {
         throw new Error("useGlobalContext must be used within a GlobaProvider");
     }
 
-    return context as GlobalContextType
+    return context
 }
 
 export default GlobalProvider
