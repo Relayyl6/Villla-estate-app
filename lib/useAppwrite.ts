@@ -7,7 +7,7 @@ interface UseAppwriteOptions<T, P extends Record<string, string | number>> {
     skip?: boolean;
 }
 
-interface UseAppwriteReturn<T, P> {
+declare interface UseAppwriteReturn<T, P> {
     data: T | null;
     loading: boolean;
     error: string | null;

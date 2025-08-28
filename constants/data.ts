@@ -3,9 +3,9 @@ import images from "./images";
 
 export const cards = [
   {
-    title: "Card 1",
-    location: "Location 1",
-    price: "$100",
+    title: "Cozy Studios",
+    location: "22 W 15th St, New York, NY 10011",
+    price: "$600",
     rating: 4.8,
     category: "house",
     image: images.newYork,
@@ -53,6 +53,14 @@ export const featuredCards = [
     image: images.japan,
     category: "flat",
   },
+  {
+    title: "Modern Apartment",
+    location: "22 W 15th St, New York, NY 10011",
+    price: "$2500",
+    rating: 4.4,
+    image: images.japan,
+    category: "story building"
+  }
 ];
 
 export const categories = [

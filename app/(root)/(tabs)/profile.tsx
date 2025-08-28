@@ -7,6 +7,8 @@ import { settings } from '@/constants/data'
 import { useGlobalContext } from '@/lib/global-provider'
 import { logout } from '@/lib/Appwrite'
 import images from '@/constants/images'
+import { generateAvatarUrl } from '@/assets/lib/utils'
+
 
 interface SettingsItemsProps {
   icon: ImageSourcePropType;
@@ -53,6 +55,9 @@ const Profile = () => {
       Alert.alert('Error', 'An error occured while logging out');
     }
   }
+  // const { user } = useGlobalContext();
+  const avatarUrl = generateAvatarUrl(user?.name || "GU")
+
   return (
     <SafeAreaView className="h-full bg-white">
       <ScrollView
@@ -73,7 +78,7 @@ const Profile = () => {
           <View className='flex flex-col items-center relative mt-5'>
             <Image
             // { uri: user?.avatar } ||
-              source={ images.avatar}
+              source={{ uri: avatarUrl }}
               className='size-44 relative rounded-full'
               alt="Avatar"
             />

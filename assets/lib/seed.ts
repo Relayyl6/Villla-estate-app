@@ -1,5 +1,5 @@
 import { ID } from "react-native-appwrite";
-import { databases, config } from "./appwrite";
+import { database, appwriteConfig } from "@/lib/Appwrite";
 import {
   agentImages,
   galleryImages,
@@ -8,32 +8,32 @@ import {
 } from "./data";
 
 const COLLECTIONS = {
-  AGENT: config.agentsCollectionId,
-  REVIEWS: config.reviewsCollectionId,
-  GALLERY: config.galleriesCollectionId,
-  PROPERTY: config.propertiesCollectionId,
+  AGENT: appwriteConfig.agentCollectionId,
+  REVIEWS: appwriteConfig.reviewCollectionId,
+  GALLERY: appwriteConfig.galleryCollectionId,
+  PROPERTY: appwriteConfig.propertycollectionId,
 };
 
-const propertyTypes = [
+export const propertyTypes = [
   "House",
-  "Townhomes",
-  "Condos",
-  "Duplexes",
-  "Studios",
+  "Condo",
+  "TownHouse",
+  "Duplex",
+  "Studio",
+  "Apartment",
   "Villa",
-  "Apartments",
-  "Others",
+  "Other",
 ];
 
 const facilities = [
   "Laundry",
-  "Car Parking",
-  "Sports Center",
+  "Parking",
+  "Sport-Center",
   "Cutlery",
   "Gym",
-  "Swimming pool",
+  "Swimming-pool",
   "Wifi",
-  "Pet Center",
+  "Pet-Friendly",
 ];
 
 function getRandomSubset<T>(
@@ -51,19 +51,15 @@ function getRandomSubset<T>(
   }
 
   // Generate a random size for the subset within the range [minItems, maxItems]
-  const subsetSize =
-    Math.floor(Math.random() * (maxItems - minItems + 1)) + minItems;
+  const subsetSize = Math.floor(Math.random() * (maxItems - minItems + 1)) + minItems;
 
   // Create a copy of the array to avoid modifying the original
   const arrayCopy = [...array];
 
-  // Shuffle the array copy using Fisher-Yates algorithm
+  // Shuffle the array copy using Fisher-Yates algorithm aka knuth shuffle
   for (let i = arrayCopy.length - 1; i > 0; i--) {
     const randomIndex = Math.floor(Math.random() * (i + 1));
-    [arrayCopy[i], arrayCopy[randomIndex]] = [
-      arrayCopy[randomIndex],
-      arrayCopy[i],
-    ];
+    [arrayCopy[i], arrayCopy[randomIndex]] = [arrayCopy[randomIndex], arrayCopy[i]];
   }
 
   // Return the first `subsetSize` elements of the shuffled array
@@ -75,13 +71,13 @@ async function seed() {
     // Clear existing data from all collections
     for (const key in COLLECTIONS) {
       const collectionId = COLLECTIONS[key as keyof typeof COLLECTIONS];
-      const documents = await databases.listDocuments(
-        config.databaseId!,
+      const documents = await database.listDocuments(
+        appwriteConfig.databaseId!,
         collectionId!
       );
       for (const doc of documents.documents) {
-        await databases.deleteDocument(
-          config.databaseId!,
+        await database.deleteDocument(
+          appwriteConfig.databaseId!,
           collectionId!,
           doc.$id
         );
@@ -93,8 +89,8 @@ async function seed() {
     // Seed Agents
     const agents = [];
     for (let i = 1; i <= 5; i++) {
-      const agent = await databases.createDocument(
-        config.databaseId!,
+      const agent = await database.createDocument(
+        appwriteConfig.databaseId!,
         COLLECTIONS.AGENT!,
         ID.unique(),
         {
@@ -110,8 +106,8 @@ async function seed() {
     // Seed Reviews
     const reviews = [];
     for (let i = 1; i <= 20; i++) {
-      const review = await databases.createDocument(
-        config.databaseId!,
+      const review = await database.createDocument(
+        appwriteConfig.databaseId!,
         COLLECTIONS.REVIEWS!,
         ID.unique(),
         {
@@ -128,8 +124,8 @@ async function seed() {
     // Seed Galleries
     const galleries = [];
     for (const image of galleryImages) {
-      const gallery = await databases.createDocument(
-        config.databaseId!,
+      const gallery = await database.createDocument(
+        appwriteConfig.databaseId!,
         COLLECTIONS.GALLERY!,
         ID.unique(),
         { image }
@@ -157,8 +153,8 @@ async function seed() {
               Math.floor(Math.random() * propertiesImages.length)
             ];
 
-      const property = await databases.createDocument(
-        config.databaseId!,
+      const property = await database.createDocument(
+        appwriteConfig.databaseId!,
         COLLECTIONS.PROPERTY!,
         ID.unique(),
         {
@@ -169,14 +165,14 @@ async function seed() {
           geolocation: `192.168.1.${i}, 192.168.1.${i}`,
           price: Math.floor(Math.random() * 9000) + 1000,
           area: Math.floor(Math.random() * 3000) + 500,
-          bedrooms: Math.floor(Math.random() * 5) + 1,
-          bathrooms: Math.floor(Math.random() * 5) + 1,
+          bedroom: Math.floor(Math.random() * 5) + 1,
+          bathroom: Math.floor(Math.random() * 5) + 1,
           rating: Math.floor(Math.random() * 5) + 1,
           facilities: selectedFacilities,
           image: image,
           agent: assignedAgent.$id,
-          reviews: assignedReviews.map((review) => review.$id),
-          gallery: assignedGalleries.map((gallery) => gallery.$id),
+          review: assignedReviews[0].$id,
+          gallery: assignedGalleries.map(g => g.$id), // Array of gallery IDs
         }
       );
 

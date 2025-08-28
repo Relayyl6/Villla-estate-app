@@ -27,7 +27,7 @@ const Filters = () => {
                     ({ title, category }, index) => (
                         <TouchableOpacity
                             key={index}
-                            className={`flex flex-col items-start mr-4 px-4 py-2 my-2 rounded-full ${selectedCategory === category ? 'bg-blue-600' : 'bg-blue-50 border border-zinc-500'}`}
+                            className={`flex flex-col items-start mr-4 px-4 py-2 my-2 rounded-full ${selectedCategory === category ? 'bg-blue-600' : 'bg-blue-50'}`}
                             onPress={() => handleCategoryPress(category)}>
                                 <Text
                                     className={`text-sm ${selectedCategory === category ? 'text-white font-rubik mt-0.5' : 'text-black-300 font-rubik-bold'}`}>
