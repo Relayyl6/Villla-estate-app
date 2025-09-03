@@ -21,8 +21,8 @@ interface Props {
         address: string;
         price: string;
         rating: number;
-        category?: string;
-        image: string; 
+        type?: string;
+        image: string;
     }// Assuming image is a URL string};
     onPress: () => void;
 }
@@ -74,14 +74,14 @@ export const FeatureCard = ({ item: {title, address, price, rating, image }, onP
 
 
 
-export const RegularCard = ({ onPress, item: {title, address, price, rating, category, image }}: Props) => {
+export const RegularCard = ({ onPress, item: {title, address, price, rating, type, image }}: Props) => {
     return (
         <TouchableOpacity
             onPress={onPress}
             className='flex-1 w-full mt-4 px-3 py-4 rounded-lg bg-white shadow-lg shadow-black-100/70 relative'>
 
             <View className="flex flex-row items-center absolute px-2 top-5 left-5 bg-white/90 p-1 rounded-full z-50">
-                <Text className='text-xs font-rubik-bold text-primary-300'>{category}</Text>
+                <Text className='text-xs font-rubik-bold text-primary-300'>{type}</Text>
             </View>
 
             <View className="flex flex-row items-center absolute px-2 top-5 right-5 bg-white/90 p-1 rounded-full z-50">

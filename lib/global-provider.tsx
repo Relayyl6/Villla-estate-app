@@ -27,7 +27,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     })
 
     const isLoggedIn = !!user;
-    // !null = true, !true = false
+    // !null = true, !true = false, so !!null means false
     // !{ name: "Leonard"} = false, !false = true }
 
     // console.log(JSON.stringify(user, null, 2));

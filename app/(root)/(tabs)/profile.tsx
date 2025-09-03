@@ -1,12 +1,12 @@
 import { View, Text, ScrollView, Image, TouchableOpacity, ImageSourcePropType, Alert } from 'react-native'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import icons from '@/constants/icons'
 // import images from '@/constants/images'
 import { settings } from '@/constants/data'
 import { useGlobalContext } from '@/lib/global-provider'
 import { logout } from '@/lib/Appwrite'
-import images from '@/constants/images'
+// import images from '@/constants/images'
 import { generateAvatarUrl } from '@/assets/lib/utils'
 
 
@@ -33,11 +33,13 @@ const SettingItem = ({ icon, title, onPress, TextStyle, showArrow=true }: Settin
         </Text>
       </View>
       {
-        showArrow && <Image
-                        source={icons.rightArrow}
-                        alt="right Arro w"
-                        className='size-5'
-                      />
+        showArrow && (
+          <Image
+            source={icons.rightArrow}
+            alt="right Arro w"
+            className='size-5'
+          />
+        )
       }
     </TouchableOpacity>
   )
@@ -45,6 +47,10 @@ const SettingItem = ({ icon, title, onPress, TextStyle, showArrow=true }: Settin
 
 const Profile = () => {
   const { user, refetch } = useGlobalContext();
+  const avatarUrl = useMemo(() => {
+    return generateAvatarUrl(user?.name || "Anonymous");
+  }, [user?.name]);
+  // const avatarUrl = getAvatarUrl();
   const handleLogout = async () => {
     const result = await logout()
 
@@ -56,14 +62,14 @@ const Profile = () => {
     }
   }
   // const { user } = useGlobalContext();
-  const avatarUrl = generateAvatarUrl(user?.name || "GU")
+  
 
   return (
     <SafeAreaView className="h-full bg-white">
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerClassName='pb-32 px-7'
-      >
+        >
         <View className="flex flex-row items-center justify-between mt-5">
           <Text className='text-2xl font-rubik-bold dark:text-white'>
             Profile
@@ -74,7 +80,7 @@ const Profile = () => {
             />
         </View>
 
-        <View className='flex flex-row justify-center mt-5'>
+        <View className='flex flex-row justify-center mt-2'>
           <View className='flex flex-col items-center relative mt-5'>
             <Image
             // { uri: user?.avatar } ||
@@ -82,7 +88,7 @@ const Profile = () => {
               className='size-44 relative rounded-full'
               alt="Avatar"
             />
-            <TouchableOpacity className='absolute bottom-11 right-4'>
+            <TouchableOpacity className='absolute bottom-11 right-6'>
               <Image
                 source={icons.edit}
                 alt="alt"

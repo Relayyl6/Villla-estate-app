@@ -8,22 +8,25 @@ import icons from "@/constants/icons";
 // import { getCurrentUser } from "@/lib/Appwrite";
 import { useGlobalContext } from "@/lib/global-provider";
 // import { Link } from "expo-router";
-import { Button, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Button, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { cards, featuredCards } from "@/constants/data"
 import { generateAvatarUrl } from "../../../assets/lib/utils";
 import seed from "@/assets/lib/seed";
-import { useCallback, useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { getLatestProperties, getProperties } from "@/lib/Appwrite";
 import { useAppwrite } from "@/lib/useAppwrite";
+import NoResult from "@/component/NoResult";
 
 
 export default function Index() {
   const { user } = useGlobalContext();
   // const user = await account.get()
   // console.log(user)
-  const avatarUrl = useCallback(generateAvatarUrl(user?.name || "GU"), [user]);
+  const avatarUrl = useMemo(() => {
+      return generateAvatarUrl(user?.name || "Anonymous");
+    }, [user?.name]);
   // console.log("Avatar URL:", user?.email)
   const params = useLocalSearchParams<{ filter?: string, query?: string }>();
   
@@ -48,7 +51,7 @@ export default function Index() {
     refetch({
       filter: params.filter,
       query: params.query,
-      limit: 10
+      limit: 6
     });
   }, [params.filter, params.query])
 
@@ -58,7 +61,7 @@ export default function Index() {
 
   return (
     <SafeAreaView className="bg-white h-full">
-      <Button title="seed" onPress={seed}/>
+      {/* <Button title="seed" onPress={seed}/> */}
       <
         FlatList
         data={properties}
@@ -70,6 +73,11 @@ export default function Index() {
         contentContainerClassName="pb-32"
         columnWrapperClassName="flex gap-5 px-5"
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          loading ? (
+            <ActivityIndicator className="text-primary-300 mt-5" size="large" />
+          ) : <NoResult />
+        }
         ListHeaderComponent={
           <View className="px-5">
             <View className="flex flex-row items-center justify-between mt-5">
@@ -109,18 +117,26 @@ export default function Index() {
                     <FeatureCard />
                 </View>
               </ScrollView> */}
-              <FlatList
-                data={latestProperties}
-                renderItem={({item}) => (
-                  <FeatureCard item={item} onPress={() => handleCardPress(item.$id)} />
-                )}
-                keyExtractor={(item) => item.$id}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                contentContainerClassName="mt-5 gap-5 mt-5"
-                // rowsWr="flex flex-row gap-5"
-                bounces={false}
-              />
+
+              {
+                latestLoadingProperties ? (
+                  <ActivityIndicator size="large" className="text-primary-300" />
+                ) : !latestProperties || latestProperties.length === 0 ?
+                <NoResult /> : (
+                  <FlatList
+                    data={latestProperties}
+                    renderItem={({item}) => (
+                      <FeatureCard item={item} onPress={() => handleCardPress(item.$id)} />
+                    )}
+                    keyExtractor={(item) => item.$id}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerClassName="mt-5 gap-5 mt-5"
+                    // rowsWr="flex flex-row gap-5"
+                    bounces={false}
+                  />
+                )
+              }
             </View>
 
             <View className="flex flex-row items-center justify-between">

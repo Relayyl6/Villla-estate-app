@@ -128,7 +128,11 @@ export async function getProperties({
         if (filter && filter !== "All") {
             buildQuery.push(Query.equal('type', filter))
         }
-
+        // If filter exists is not All, then make up an array that will be
+        // [
+        //      Query.orderDesc('$createdAt'),
+        //      Query.equal('type', filter),
+        // ]
         if (query) {
             buildQuery.push(Query.or([
                 Query.search('name', query),
@@ -136,7 +140,18 @@ export async function getProperties({
                 Query.search('type', query),
             ]))
         }
-
+        // if query exists
+        // it becomes
+        // [
+        //      Query.orderDesc('$createdAt'),
+        //      Query.equal('type', filter),
+        //      Query.or([
+        //          Query.search('name', query),
+        //          Query.search('address', query),
+        //          Query.search('type', query),
+        //      ])
+        //      Query.limit(limit) // if adding limit
+        // ]
         if (limit) {
             buildQuery.push(Query.limit(limit))
         }
@@ -146,9 +161,26 @@ export async function getProperties({
             appwriteConfig.propertycollectionId!,
             buildQuery
         )
-        return result.documents
+        return result.documents;
     } catch (error) {
         console.log(error)
-        return ''
+        return '';
+    }
+}
+
+export const getPropertiesPage = async ({ propertyId }: { propertyId: string }) => {
+    try {
+        const property = await database.getDocument(
+            appwriteConfig.databaseId!,
+            appwriteConfig.propertycollectionId!,
+            propertyId,
+        )
+
+        console.log(property);
+
+        return property
+    } catch (error) {
+        console.error(error);
+        return null
     }
 }
