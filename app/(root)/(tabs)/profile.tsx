@@ -8,6 +8,7 @@ import { useGlobalContext } from '@/lib/global-provider'
 import { logout } from '@/lib/Appwrite'
 // import images from '@/constants/images'
 import { generateAvatarUrl } from '@/assets/lib/utils'
+import { router, usePathname } from 'expo-router'
 
 
 interface SettingsItemsProps {
@@ -18,7 +19,7 @@ interface SettingsItemsProps {
   showArrow?: boolean
 }
 
-const SettingItem = ({ icon, title, onPress, TextStyle, showArrow=true }: SettingsItemsProps ) => {
+const SettingItem = ({ icon, title, TextStyle, showArrow=true, onPress }: SettingsItemsProps ) => {
   return (
     <TouchableOpacity
       className="flex flex-row items-center justify-between py-3"
@@ -34,11 +35,13 @@ const SettingItem = ({ icon, title, onPress, TextStyle, showArrow=true }: Settin
       </View>
       {
         showArrow && (
-          <Image
-            source={icons.rightArrow}
-            alt="right Arro w"
-            className='size-5'
-          />
+          <TouchableOpacity onPress={onPress}>
+            <Image
+              source={icons.rightArrow}
+              alt="right Arro w"
+              className='size-5'
+            />
+          </TouchableOpacity>
         )
       }
     </TouchableOpacity>
@@ -47,6 +50,7 @@ const SettingItem = ({ icon, title, onPress, TextStyle, showArrow=true }: Settin
 
 const Profile = () => {
   const { user, refetch } = useGlobalContext();
+  const location = usePathname();
   const avatarUrl = useMemo(() => {
     return generateAvatarUrl(user?.name || "Anonymous");
   }, [user?.name]);
@@ -62,7 +66,11 @@ const Profile = () => {
     }
   }
   // const { user } = useGlobalContext();
-  
+  const handlerPress = (screen: string) => {
+    router.push(`/screens/${screen}` as any)
+  }
+
+  console.log(location);
 
   return (
     <SafeAreaView className="h-full bg-white">
@@ -102,17 +110,21 @@ const Profile = () => {
           <SettingItem
             icon={icons.calendar}
             title="My Bookings"
+            onPress={() => handlerPress('bookings')}
           />
           <SettingItem
             icon={icons.wallet}
             title="Payments"
+            onPress={() => handlerPress("payments")}
           />
         </View>
         <View className='flex flex-col mt-5 border-t pt-5 border-primary-200'>
           {
-            settings.slice(2).map((item, index) => (
-              <SettingItem key={index} {...item} />
-            ))
+            settings.slice(2).map(( item: { title: string; route: string; icon: ImageSourcePropType }, index) => {
+              // console.log(item, item.route)
+              return (
+                <SettingItem key={index} {...item} onPress={() => handlerPress(item.route)} />
+            )})
           }
         </View>
         <View className="flex flex-col mt-5 border-t pt-5 border-primary-200">

@@ -10,12 +10,9 @@ import { useGlobalContext } from "@/lib/global-provider";
 // import { Link } from "expo-router";
 import { ActivityIndicator, Button, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import { cards, featuredCards } from "@/constants/data"
-import { generateAvatarUrl } from "../../../assets/lib/utils";
-import seed from "@/assets/lib/seed";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { getLatestProperties, getProperties } from "@/lib/Appwrite";
+import { getProperties } from "@/lib/Appwrite";
 import { useAppwrite } from "@/lib/useAppwrite";
 import NoResult from "@/component/NoResult";
 
